@@ -1,12 +1,29 @@
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
+import { useAuth } from "../../hooks/useAuth";
+import { Link, useNavigate } from "react-router";
+import { useSelector } from "react-redux";
+import { RootState } from "../../states/store";
 const LoginPage = () => {
+  const { login, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    (async () => {
+      if ((await isAuthenticated()) == true) {
+        navigate("/dashboard", { replace: true });
+      }
+    })();
+  }, []);
+
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-
+  const token = useSelector((state: RootState) => state.auth.token);
   const handleLogin = async (event: React.SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.info({ username, password });
+
+    await login({ username, password });
+
+    return;
   };
   return (
     <div className="w-full flex justify-center items-center h-screen bg-slate-600">
@@ -36,6 +53,14 @@ const LoginPage = () => {
         >
           Login
         </button>
+        <button
+          onClick={() => console.info(token)}
+          type="button"
+          className="bg-slate-700 text-md text-white p-2 rounded-md"
+        >
+          Token
+        </button>
+        <Link to="/dashboard">Dashboard</Link>
       </form>
     </div>
   );

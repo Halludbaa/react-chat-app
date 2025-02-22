@@ -1,13 +1,21 @@
-import axios from "axios";
+import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+import { store } from "../states/store";
+import refresh from "./refresh";
+
+interface AxiosRetry extends InternalAxiosRequestConfig {
+  _retry: boolean;
+}
 
 const API = axios.create({
   baseURL: "http://localhost:8080",
+  withCredentials: true,
 });
 
 API.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
+    const token = store.getState().auth.token;
     if (token) {
+      config.headers = config.headers ?? {};
       config.headers.Authorization = `Bearer ${token}`;
     }
 
@@ -18,17 +26,16 @@ API.interceptors.request.use(
 
 API.interceptors.response.use(
   (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
-    if (
-      error.response &&
-      error.response.status == 401 &&
-      !originalRequest._retry
-    ) {
-      originalRequest._retry = true;
-      try {
-      } catch (refreshErr) {
-        localStorage.removeItem("token");
+  async (error: AxiosError) => {
+    const prevRequest = error.config as AxiosRetry;
+    if (error.response?.status == 401 && !prevRequest?._retry) {
+      prevRequest._retry = true;
+
+      const newToken = await refresh();
+      if (newToken) {
+        prevRequest.headers = prevRequest.headers ?? {};
+        prevRequest.headers.Authorization = `Bearer ${newToken}`;
+        return API(prevRequest);
       }
     }
 
