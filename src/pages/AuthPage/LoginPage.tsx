@@ -1,19 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import { useSelector } from "react-redux";
 import { RootState } from "../../states/store";
 const LoginPage = () => {
-  const { login, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    (async () => {
-      if ((await isAuthenticated()) == true) {
-        navigate("/dashboard", { replace: true });
-      }
-    })();
-  }, []);
+  const { login } = useAuth();
 
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -60,7 +51,9 @@ const LoginPage = () => {
         >
           Token
         </button>
-        <Link to="/dashboard">Dashboard</Link>
+        <Link to="/dashboard" replace>
+          Dashboard
+        </Link>
       </form>
     </div>
   );

@@ -1,8 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
 import API from "../services/api";
 import { RootState } from "../states/store";
-import { setToken, setUser } from "../states/auth/authSlice";
-import { replace, useNavigate } from "react-router";
+import { logout, setToken, setUser } from "../states/auth/authSlice";
+import { useNavigate } from "react-router";
+import { useEffect } from "react";
+import refresh from "../services/refresh";
 
 type UserRequest = {
   username: string;
@@ -14,7 +16,21 @@ export function useAuth() {
   const token = useSelector((state: RootState) => state.auth.token);
   const dispatch = useDispatch();
 
-  const isAuthenticated = () => !!token;
+  useEffect(() => {
+    const refreshToken = async () => {
+      const [newToken, user] = await refresh();
+      if (!newToken || !user) {
+        dispatch(logout());
+        return;
+      }
+
+      dispatch(setToken(newToken));
+      dispatch(setUser({ user }));
+    };
+    refreshToken();
+  }, []);
+
+  const isAuthenticated = () => !token;
 
   const login = async (request: UserRequest) => {
     try {

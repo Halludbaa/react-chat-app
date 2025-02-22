@@ -1,16 +1,24 @@
-import API from "./services/api";
+import { Route, Routes } from "react-router";
+import DashboardPage from "./pages/DashboardPage";
+import HelloWorld from "./pages/HelloWorld";
+import AuthLayout from "./components/AuthLayout";
+import LoginPage from "./pages/AuthPage/LoginPage";
+import GuestLayout from "./components/GuestLayout";
+import { useAuth } from "./hooks/useAuth";
 
 function App() {
-  const handlePing = async () => {
-    const response = await API.get("/ping");
-    console.clear();
-    console.info(response.data);
-  };
+  useAuth();
   return (
-    <>
-      <h1 className="text-4xl font-mono">Hello And Welcome in Chat App</h1>
-      <button onClick={handlePing}>Ping</button>
-    </>
+    <Routes>
+      <Route element={<AuthLayout />}>
+        <Route path="/" element={<DashboardPage />} />
+        <Route path="/hello-world" element={<HelloWorld />} />
+      </Route>
+
+      <Route element={<GuestLayout />}>
+        <Route path="/login" element={<LoginPage />} />
+      </Route>
+    </Routes>
   );
 }
 
