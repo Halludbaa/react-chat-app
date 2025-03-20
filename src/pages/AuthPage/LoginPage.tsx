@@ -44,16 +44,6 @@ const LoginPage = () => {
         >
           Login
         </button>
-        <button
-          onClick={() => console.info(token)}
-          type="button"
-          className="bg-slate-700 text-md text-white p-2 rounded-md"
-        >
-          Token
-        </button>
-        <Link to="/dashboard" replace>
-          Dashboard
-        </Link>
       </form>
     </div>
   );

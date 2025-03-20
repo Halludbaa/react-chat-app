@@ -5,6 +5,7 @@ import AuthLayout from "./components/AuthLayout";
 import LoginPage from "./pages/AuthPage/LoginPage";
 import GuestLayout from "./components/GuestLayout";
 import { useAuth } from "./hooks/useAuth";
+import ChatPage from "./pages/ChatPage/ChatPage";
 
 function App() {
   useAuth();
@@ -13,6 +14,7 @@ function App() {
       <Route element={<AuthLayout />}>
         <Route path="/" element={<DashboardPage />} />
         <Route path="/hello-world" element={<HelloWorld />} />
+        <Route path="/chat" element={<ChatPage />} />
       </Route>
 
       <Route element={<GuestLayout />}>

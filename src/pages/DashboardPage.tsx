@@ -7,8 +7,18 @@ const DashboardPage = () => {
   const user = useSelector((state: RootState) => state.auth.user);
   return (
     <>
-      <Link to={"/hello-world"}>Hello World</Link>
       <h1 className="text-4xl font-mono">Hello And Welcome in Chat App</h1>
+
+      <Link
+        to={"/hello-world"}
+        className="p-2 rounded-lg bg-slate-700 text-white"
+      >
+        Hello World
+      </Link>
+
+      <Link to={"/chat"} className="p-2 rounded-lg bg-slate-700 text-white">
+        Chat
+      </Link>
 
       <button
         className="p-2 rounded-lg bg-slate-700 text-white"
